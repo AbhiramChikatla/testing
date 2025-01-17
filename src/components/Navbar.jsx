@@ -4,6 +4,7 @@ import { userContext } from "../context/userContext";
 import "react-loading-skeleton/dist/skeleton.css";
 import Celekton from "./Celekton";
 import { CircleUserRound } from "lucide-react";
+import { BACKEND_URL } from "../../utlils/helpers";
 
 const Navbar = () => {
     const [ready, SetReady] = useState(false);
@@ -18,7 +19,11 @@ const Navbar = () => {
         }, 500);
     }, []);
     const handleLogout = async() => {
-        await fetch("http://localhost:3000/logout", {
+        // await fetch("http://localhost:3000/logout", {
+        //     method: "GET",
+        //     credentials: "include",
+        // }
+        await fetch(BACKEND_URL+"/logout", {
             method: "GET",
             credentials: "include",
         }

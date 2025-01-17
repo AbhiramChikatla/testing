@@ -15,7 +15,7 @@ const url = process.env.MONGO_URI;
 
 // code written for accepting cookies
 const corsOptions = {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 };
 
@@ -134,7 +134,7 @@ app.post("/newpassword", (req, res) => {
 
 app.get("/profile", (req, res) => {
 
-    const { token } = req.cookies;
+    const { token } = req.cookies; 
     if (token) {
         jwt.verify(token, jwtSecret, {}, (err, user) => {
             if (err){ 
