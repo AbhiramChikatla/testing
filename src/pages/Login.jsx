@@ -6,6 +6,7 @@ import blackchecked from "../assets/blackchecked.png";
 import blackcrossed from "../assets/blackcrossed.png";
 import { Link, Navigate } from "react-router-dom";
 import { userContext } from "../context/userContext";
+import { BACKEND_URL } from "../../utlils/helpers";
 
 const Login = () => {
     const imgRef = useRef();
@@ -23,7 +24,7 @@ const Login = () => {
     const onSubmit = async (data) => {
         console.log(data);
         reset();
-        let response = await fetch("http://localhost:3000/login", {
+        let response = await fetch(BACKEND_URL+"/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
