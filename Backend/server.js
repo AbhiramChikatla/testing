@@ -82,7 +82,7 @@ app.post("/createaccount", async (req, res) => {
         //     msg: "Account Created Successfully",
         //     token:token
         // });
-        res.cookie("token", token, { sameSite: "lax" }).send({
+        res.cookie("token", token, ).send({
             success: true,
             msg: "Account Created Successfully",
             user: createUser,
@@ -117,8 +117,9 @@ app.post("/login", async (req, res) => {
             }
         );
         res.cookie("token",token,{
-            secure:false,   // important
-            sameSite:"lax",
+            // secure:false,   // important
+            // commenting the above also works
+            // sameSite:"lax",
         }).send({ success: true, msg: "Login Successful",user:userObj });
     } else {
         res.send({ success: false, msg: "Incorrect Password" });
