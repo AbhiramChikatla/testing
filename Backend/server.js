@@ -5,7 +5,8 @@ import { mongoose } from "mongoose";
 import cors from "cors";
 import bodyParser from "body-parser";
 import "dotenv/config";
-import { userModel } from "../src/models/UserSchema.js";
+// import { userModel } from "./models/userSchema";
+import { userModel } from "./models/userSchema.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
@@ -14,7 +15,7 @@ import cookieParser from "cookie-parser";
 const url = process.env.MONGO_URI;
 
 // code written for accepting cookies
-const corsOptions = {
+const corsOptions = { 
     origin: process.env.FRONTEND_URL,
     credentials: true,
 };
@@ -25,8 +26,10 @@ const dbName = "react-authentication";
 // jwt secret
 
 const jwtSecret = "yourjwtsecret";
+console.log(process.env.MONGO_URI);
 
 await mongoose.connect(process.env.MONGO_URI, {
+    tls: true,
     dbName: dbName,
 });
 console.log("Connected successfully to server");
@@ -147,7 +150,7 @@ app.get("/profile", (req, res) => {
     } else {
         res.json(null);
     }
-});
+}); 
 
 app.get("/logout", (req, res) => {
     res.clearCookie("token").send("Logged Out");
