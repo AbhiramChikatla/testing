@@ -7,6 +7,7 @@ import blackcrossed from "../assets/blackcrossed.png";
 import { Link, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { userContext } from "../context/userContext";
+import { BACKEND_URL } from "../../utlils/helpers";
 const Register = () => {
     const imgRef = useRef();
     const [visible, setVisible] = useState(true);
@@ -22,7 +23,7 @@ const Register = () => {
     } = useForm();
     const onSubmit = async (data) => {
         reset();
-        let response = await fetch("http://localhost:3000/createaccount", {
+        let response = await fetch(BACKEND_URL+"/createaccount", {
             method: "POST",
 
             headers: {

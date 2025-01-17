@@ -15,9 +15,10 @@ import cookieParser from "cookie-parser";
 const url = process.env.MONGO_URI;
 
 // code written for accepting cookies
-const corsOptions = { 
+const corsOptions = {
     origin: process.env.FRONTEND_URL,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
 };
 
 // Database Name
@@ -85,10 +86,15 @@ app.post("/createaccount", async (req, res) => {
         //     msg: "Account Created Successfully",
         //     token:token
         // });
-        res.cookie("token", token, ).send({
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        }).send({
             success: true,
             msg: "Account Created Successfully",
-            user: createUser,
+            token: token,
         });
     } catch (error) {
         res.status(400).json({ success: false, error: error });
@@ -111,19 +117,21 @@ app.post("/login", async (req, res) => {
     // password checking
     const isMatch = await bcrypt.compare(password, findUser.password);
     if (isMatch) {
-        const userObj={username:findUser.username,email}
-        const token = jwt.sign(
-            userObj,
-            jwtSecret,
-            {
-                expiresIn: "2h",
-            }
-        );
-        res.cookie("token",token,{
-            // secure:false,   // important
-            // commenting the above also works
-            // sameSite:"lax",
-        }).send({ success: true, msg: "Login Successful",user:userObj });
+        const userObj = { username: findUser.username, email };
+        const token = jwt.sign(userObj, jwtSecret, {
+            expiresIn: "2h",
+        });
+        // res.cookie("token",token,{
+        //     // secure:false,   // important
+        //     // commenting the above also works
+        //     // sameSite:"lax",
+        // }).send({ success: true, msg: "Login Successful",user:userObj });
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        }).send({ success: true, msg: "Login Successful", user: userObj });
     } else {
         res.send({ success: false, msg: "Incorrect Password" });
     }
@@ -136,26 +144,23 @@ app.post("/newpassword", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
+    const { token } = req.cookies;
 
-    const { token } = req.cookies; 
     if (token) {
         jwt.verify(token, jwtSecret, {}, (err, user) => {
-            if (err){ 
-                
-                throw err
-            
-            };
+            if (err) {
+                throw err;
+            }
             res.json(user);
         });
     } else {
         res.json(null);
     }
-}); 
+});
 
 app.get("/logout", (req, res) => {
     res.clearCookie("token").send("Logged Out");
 });
-
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
